@@ -200,33 +200,40 @@ The component is now ready to use. You can see the preview on the right side of 
         return `import React, { useState } from 'react';
 
 const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Handle form submission here
+    setSubmitted(true);
   };
 
+  if (submitted) {
+    return (
+      <div className="max-w-md mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100 text-center">
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Message sent!</h3>
+        <p className="text-sm text-gray-500">We will get back to you within 24 hours.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Contact Us</h2>
+    <div className="max-w-md mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">Get in touch</h2>
+      <p className="text-sm text-gray-500 mb-6">We would love to hear from you. Send us a message.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Name
-          </label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <input
             type="text"
             id="name"
@@ -234,14 +241,12 @@ const ContactForm = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Jane Smith"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
           />
         </div>
-        
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
           <input
             type="email"
             id="email"
@@ -249,14 +254,12 @@ const ContactForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="jane@example.com"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
           />
         </div>
-        
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-            Message
-          </label>
+          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
           <textarea
             id="message"
             name="message"
@@ -264,13 +267,13 @@ const ContactForm = () => {
             onChange={handleChange}
             required
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="How can we help you?"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
           />
         </div>
-        
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+          className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-semibold hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200"
         >
           Send Message
         </button>
@@ -284,31 +287,51 @@ export default ContactForm;`;
       case "card":
         return `import React from 'react';
 
-const Card = ({ 
-  title = "Welcome to Our Service", 
-  description = "Discover amazing features and capabilities that will transform your experience.",
-  imageUrl,
-  actions 
+const Avatar = ({ initials }) => (
+  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-2xl font-bold shadow-md ring-4 ring-white">
+    {initials}
+  </div>
+);
+
+const Badge = ({ label }) => (
+  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+    {label}
+  </span>
+);
+
+const Card = ({
+  name = "Alex Rivera",
+  role = "Senior Product Designer",
+  bio = "Crafting intuitive digital experiences for over 8 years. Passionate about design systems and accessibility.",
+  tags = ["Design Systems", "Figma", "React"],
+  stats = [{ label: 'Followers', value: '2.4k' }, { label: 'Following', value: '381' }, { label: 'Projects', value: '47' }],
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      {imageUrl && (
-        <img 
-          src={imageUrl} 
-          alt={title}
-          className="w-full h-48 object-cover"
-        />
-      )}
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="text-gray-600 mb-4">{description}</p>
-        {actions && (
-          <div className="mt-4">
-            {actions}
-          </div>
-        )}
+    <article className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 w-full max-w-sm">
+      <div className="h-24 bg-gradient-to-br from-indigo-500 to-violet-600" />
+      <div className="px-6 pb-6">
+        <div className="-mt-10 mb-4">
+          <Avatar initials={name.split(' ').map(n => n[0]).join('')} />
+        </div>
+        <h2 className="text-xl font-bold text-gray-900">{name}</h2>
+        <p className="text-sm font-medium text-indigo-600 mb-3">{role}</p>
+        <p className="text-sm text-gray-500 leading-relaxed mb-4">{bio}</p>
+        <div className="flex flex-wrap gap-2 mb-5">
+          {tags.map(tag => <Badge key={tag} label={tag} />)}
+        </div>
+        <div className="grid grid-cols-3 divide-x divide-gray-100 border-t border-b border-gray-100 py-3 mb-5">
+          {stats.map(s => (
+            <div key={s.label} className="text-center">
+              <div className="text-lg font-bold text-gray-900">{s.value}</div>
+              <div className="text-xs text-gray-500">{s.label}</div>
+            </div>
+          ))}
+        </div>
+        <button className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-semibold hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">
+          Follow
+        </button>
       </div>
-    </div>
+    </article>
   );
 };
 
@@ -320,40 +343,30 @@ export default Card;`;
 const Counter = () => {
   const [count, setCount] = useState(0);
 
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  const decrement = () => {
-    setCount(count - 1);
-  };
-
-  const reset = () => {
-    setCount(0);
-  };
-
   return (
-    <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Counter</h2>
-      <div className="text-4xl font-bold mb-6">{count}</div>
-      <div className="flex gap-4">
-        <button 
-          onClick={decrement}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+    <div className="flex flex-col items-center gap-6 p-10 bg-white rounded-2xl shadow-xl border border-gray-100">
+      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Counter</h2>
+      <div className={"text-8xl font-bold tabular-nums transition-colors duration-300 " + (count > 0 ? 'text-indigo-600' : count < 0 ? 'text-rose-500' : 'text-gray-800')}>
+        {count}
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => setCount(c => c - 1)}
+          className="w-12 h-12 rounded-xl bg-rose-50 text-rose-500 text-2xl font-bold hover:bg-rose-100 focus:ring-2 focus:ring-rose-400 focus:outline-none transition-colors duration-200"
         >
-          Decrease
+          -
         </button>
-        <button 
-          onClick={reset}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+        <button
+          onClick={() => setCount(0)}
+          className="px-5 h-12 rounded-xl bg-gray-100 text-gray-500 text-sm font-medium hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-colors duration-200"
         >
           Reset
         </button>
-        <button 
-          onClick={increment}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+        <button
+          onClick={() => setCount(c => c + 1)}
+          className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 text-2xl font-bold hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition-colors duration-200"
         >
-          Increase
+          +
         </button>
       </div>
     </div>
@@ -369,20 +382,20 @@ export default Counter;`;
       case "form":
         return "    console.log('Form submitted:', formData);";
       case "card":
-        return '      <div className="p-6">';
+        return '      <article className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 w-full max-w-sm">';
       default:
-        return "  const increment = () => setCount(count + 1);";
+        return '      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Counter</h2>';
     }
   }
 
   private getNewStringForReplace(componentType: string): string {
     switch (componentType) {
       case "form":
-        return "    console.log('Form submitted:', formData);\n    alert('Thank you! We\\'ll get back to you soon.');";
+        return "    console.log('Form submitted successfully:', formData);";
       case "card":
-        return '      <div className="p-6 hover:bg-gray-50 transition-colors">';
+        return '      <article className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 w-full max-w-sm transition-shadow hover:shadow-2xl">';
       default:
-        return "  const increment = () => setCount(prev => prev + 1);";
+        return '      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest" aria-label="Counter widget">Counter</h2>';
     }
   }
 
@@ -392,18 +405,8 @@ export default Counter;`;
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <Card 
-          title="Amazing Product"
-          description="This is a fantastic product that will change your life. Experience the difference today!"
-          actions={
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Learn More
-            </button>
-          }
-        />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-violet-50 flex items-center justify-center p-8">
+      <Card />
     </div>
   );
 }`;
@@ -413,10 +416,8 @@ export default function App() {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <${componentName} />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 flex items-center justify-center p-8">
+      <${componentName} />
     </div>
   );
 }`;
